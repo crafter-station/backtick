@@ -139,7 +139,7 @@ export default function Editor() {
       <header className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2 font-mono text-sm tracking-tight text-zinc-400">
           <span className="inline-block size-2 rounded-full bg-emerald-400" />
-          code<span className="text-zinc-600">/</span>share
+          <span className="text-zinc-600">`</span>backtick
         </div>
         <div className="flex items-center gap-2">
           <Button

@@ -5,8 +5,8 @@ import type { ThemeRegistration } from "shiki";
  * matching the Raycast/Vercel-style promo screenshots.
  */
 export const MONO_THEME: ThemeRegistration = {
-  name: "code-share-mono",
-  displayName: "Mono (code/share)",
+  name: "backtick-mono",
+  displayName: "Mono (Backtick)",
   type: "dark",
   colors: {
     "editor.background": "#0d0d0d",

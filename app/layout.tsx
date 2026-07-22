@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "code/share — beautiful code screenshots",
+  title: "Backtick - beautiful code screenshots",
   description:
     "Turn code snippets into aesthetic, shareable images with Raycast-style backgrounds.",
 };
