@@ -2,6 +2,8 @@
 
 Beautiful code screenshots. Paste a snippet, pick a background, export a pixel-perfect PNG.
 
+Live at [backtick.crafter.run](https://backtick.crafter.run)
+
 ![Backtick: a code snippet rendered on a Raycast wallpaper](public/og.png)
 
 ## Features
