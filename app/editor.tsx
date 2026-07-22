@@ -51,17 +51,20 @@ const LANGUAGES = [...bundledLanguagesInfo].sort((a, b) =>
   a.name.localeCompare(b.name),
 );
 
+const DEFAULT_BACKGROUND =
+  WALLPAPERS.find((w) => w.id === "wp-red_distortion_1") ?? BACKGROUNDS[0];
+
 export default function Editor() {
   const [code, setCode] = useState(DEFAULT_CODE);
   const [lang, setLang] = useState<BundledLanguage>("typescript");
-  const [theme, setTheme] = useState<string>(MONO_THEME.name!);
-  const [background, setBackground] = useState(BACKGROUNDS[0]);
+  const [theme, setTheme] = useState<string>("vesper");
+  const [background, setBackground] = useState(DEFAULT_BACKGROUND);
   const [padding, setPadding] = useState<number>(64);
-  const [opacity, setOpacity] = useState<number>(88);
-  const [fontSize, setFontSize] = useState<number>(14);
-  const [lineNumbers, setLineNumbers] = useState(false);
+  const [opacity, setOpacity] = useState<number>(98);
+  const [fontSize, setFontSize] = useState<number>(15);
+  const [lineNumbers, setLineNumbers] = useState(true);
   const [chrome, setChrome] = useState<ChromeStyle>("mono");
-  const [title, setTitle] = useState("untitled");
+  const [title, setTitle] = useState("function.ts");
   const [html, setHtml] = useState("");
   const [themeBg, setThemeBg] = useState("#101010");
   const [themeFg, setThemeFg] = useState("#dbd7ca");
