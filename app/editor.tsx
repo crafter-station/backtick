@@ -9,7 +9,7 @@ import {
   type BundledLanguage,
   type BundledTheme,
 } from "shiki";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, StarIcon } from "lucide-react";
 import { BACKGROUNDS, WALLPAPERS, type Background } from "@/lib/backgrounds";
 import { MONO_THEME } from "@/lib/mono-theme";
 import { cn } from "@/lib/utils";
@@ -50,6 +50,8 @@ type ChromeStyle = "colors" | "mono" | "none";
 const LANGUAGES = [...bundledLanguagesInfo].sort((a, b) =>
   a.name.localeCompare(b.name),
 );
+
+const GITHUB_REPO = "crafter-station/backtick";
 
 const DEFAULT_BACKGROUND =
   WALLPAPERS.find((w) => w.id === "wp-red_distortion_1") ?? BACKGROUNDS[0];
@@ -159,6 +161,7 @@ export default function Editor() {
           <span className="text-zinc-600">`</span>backtick
         </div>
         <div className="flex items-center gap-2">
+          <GithubStars />
           <Button
             variant="outline"
             size="sm"
@@ -348,6 +351,35 @@ export default function Editor() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function GithubStars() {
+  const [stars, setStars] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/${GITHUB_REPO}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setStars(d?.stargazers_count ?? null))
+      .catch(() => {});
+  }, []);
+
+  return (
+    <Button variant="ghost" size="sm" asChild>
+      <a
+        href={`https://github.com/${GITHUB_REPO}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <StarIcon className="size-4" />
+        {stars === null
+          ? "Star"
+          : new Intl.NumberFormat("en", {
+              notation: "compact",
+              maximumFractionDigits: 1,
+            }).format(stars)}
+      </a>
+    </Button>
   );
 }
 
