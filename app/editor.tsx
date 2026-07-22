@@ -9,9 +9,17 @@ import {
   type BundledLanguage,
   type BundledTheme,
 } from "shiki";
+import { ChevronDownIcon } from "lucide-react";
 import { BACKGROUNDS, WALLPAPERS, type Background } from "@/lib/backgrounds";
 import { MONO_THEME } from "@/lib/mono-theme";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -21,6 +29,12 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Toggle } from "@/components/ui/toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const DEFAULT_CODE = `async function share(code: string) {
   const frame = await paint(code, {
@@ -228,21 +242,8 @@ export default function Editor() {
 
       <footer className="sticky bottom-0 flex justify-center px-6 pb-6">
         <div className="flex max-w-full flex-wrap items-center justify-center gap-x-5 gap-y-3 rounded-2xl border border-white/10 bg-zinc-900/80 px-5 py-3.5 shadow-2xl backdrop-blur-xl">
-          <Control label="Gradient">
-            <Swatches
-              items={BACKGROUNDS}
-              active={background.id}
-              onPick={setBackground}
-            />
-          </Control>
-
-          <Control label="Raycast wallpapers">
-            <Swatches
-              items={WALLPAPERS}
-              active={background.id}
-              onPick={setBackground}
-              scroll
-            />
+          <Control label="Background">
+            <BackgroundPicker active={background} onPick={setBackground} />
           </Control>
 
           <Control label="Language">
@@ -354,36 +355,91 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
 }
 
-function Swatches({
+function BackgroundPicker({
+  active,
+  onPick,
+}: {
+  active: Background;
+  onPick: (bg: Background) => void;
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-44 justify-between px-2.5 text-xs font-normal"
+        >
+          <span className="flex min-w-0 items-center gap-2">
+            <span
+              className="size-4 shrink-0 rounded-sm ring-1 ring-white/15"
+              style={{ background: active.swatch ?? active.css }}
+            />
+            <span className="truncate">{active.name}</span>
+          </span>
+          <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent side="top" align="start" className="w-80 p-3">
+        <TooltipProvider>
+          <div className="flex flex-col gap-3">
+            <SwatchGrid
+              label="Gradients"
+              items={BACKGROUNDS}
+              active={active.id}
+              onPick={onPick}
+            />
+            <ScrollArea className="h-48">
+              <SwatchGrid
+                label="Raycast wallpapers"
+                items={WALLPAPERS}
+                active={active.id}
+                onPick={onPick}
+              />
+            </ScrollArea>
+          </div>
+        </TooltipProvider>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function SwatchGrid({
+  label,
   items,
   active,
   onPick,
-  scroll,
 }: {
+  label: string;
   items: Background[];
   active: string;
   onPick: (bg: Background) => void;
-  scroll?: boolean;
 }) {
   return (
-    <div
-      className={`flex items-center gap-1.5 py-0.5 ${
-        scroll ? "max-w-72 overflow-x-auto px-1 [scrollbar-width:thin]" : ""
-      }`}
-    >
-      {items.map((bg) => (
-        <button
-          key={bg.id}
-          title={bg.name}
-          onClick={() => onPick(bg)}
-          className={`size-6 shrink-0 rounded-full transition hover:scale-110 ${
-            active === bg.id
-              ? "ring-2 ring-white ring-offset-2 ring-offset-zinc-900"
-              : "ring-1 ring-white/20"
-          }`}
-          style={{ background: bg.swatch ?? bg.css }}
-        />
-      ))}
+    <div className="flex flex-col gap-2">
+      <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+        {label}
+      </span>
+      <div className="grid grid-cols-6 gap-1.5 p-0.5">
+        {items.map((bg) => (
+          <Tooltip key={bg.id}>
+            <TooltipTrigger asChild>
+              <button
+                aria-label={bg.name}
+                onClick={() => onPick(bg)}
+                className={cn(
+                  "aspect-square w-full rounded-md transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  active === bg.id
+                    ? "ring-2 ring-ring ring-offset-2 ring-offset-popover"
+                    : "ring-1 ring-border",
+                )}
+                style={{ background: bg.swatch ?? bg.css }}
+              />
+            </TooltipTrigger>
+            <TooltipContent side="top">{bg.name}</TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
     </div>
   );
 }
